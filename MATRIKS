@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int getRandomNumber(int min, int max) {
+    return min + rand() % (max - min + 1);
+}
+
+void generateMatrixA(int **A, int n) {
+    for (int r = 0; r < n; r++) {
+        for (int c = 0; c < n; c++) {
+            A[r][c] = getRandomNumber(0, 1);
+        }
+    }
+}
+
+void generateIdentity(int **I, int n) {
+    for (int r = 0; r < n; r++) {
+        for (int c = 0; c < n; c++) {
+            I[r][c] = (r == c) ? 1 : 0;
+        }
+    }
+}
+
+void multiplyMatrix(int **A, int **I, int **AI, int n) {
+    for (int r = 0; r < n; r++) {
+        for (int c = 0; c < n; c++) {
+            AI[r][c] = A[r][c];  // because multiplying by identity gives same matrix
+        }
+    }
+}
+
+void saveMatrix(const char *filename, int **M, int n) {
+    ofstream file(filename);
+    for (int r = 0; r < n; r++) {
+        for (int c = 0; c < n; c++) {
+            file << M[r][c] << " ";
+        }
+        file << "\n";
+    }
+    file.close();
+}
+
+int main() {
+    srand(time(0));
+    const int n = 1000;
+
+    // allocate memory on heap
+    int **A = new int*[n];
+    int **I = new int*[n];
+    int **AI = new int*[n];
+
+    for (int k = 0; k < n; k++) {
+        A[k] = new int[n];
+        I[k] = new int[n];
+        AI[k] = new int[n];
+    }
+
+    // generate matrices
+    generateMatrixA(A, n);
+    generateIdentity(I, n);
+    multiplyMatrix(A, I, AI, n);
+
+    // save files
+    saveMatrix("a.txt", A, n);
+    saveMatrix("i.txt", I, n);
+    saveMatrix("ai.txt", AI, n);
+
+    // free heap memory
+    for (int k = 0; k < n; k++) {
+        delete[] A[k];
+        delete[] I[k];
+        delete[] AI[k];
+    }
+    delete[] A;
+    delete[] I;
+    delete[] AI;
+
+    return 0;
+}
